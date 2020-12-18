@@ -4,6 +4,7 @@ __pycache__/
 .pytest_cache/
 build-package.sh
 __trash/
+main.py
 *.py[cod]
 *$py.class
 

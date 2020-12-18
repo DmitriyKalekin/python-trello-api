@@ -1,5 +1,5 @@
 import asyncio
-from typing import List
+from typing import List, Union
 from aiohttp import ClientSession, ClientResponse
 
 from datetime import datetime
@@ -78,19 +78,6 @@ class TrelloJson:
             if response.content_type == "text/plain":
                 return {"status": response.status, "message": await response.text(), "error": "ERROR"}
             return await response.json()
-
-
-
-    async def recreate_webhook(self, callback_url: str) -> dict:
-        log.debug(f"Trello: Setting webhook {callback_url} ...")
-        wh_list = await self.get_webhooks()
-        # wh_list = await response.json()
-        for wh in wh_list:
-            # if "mpk" in wh.callBackURL:
-            #     continue
-            await self.del_webhook(wh["id"])
-        return await self.set_webhook(callback_url)
-
 
 
 
@@ -179,11 +166,11 @@ class TrelloJson:
         #
         # return card, lab
 
-    async def get_lists(self, **kwagrs):  #-> List[TrelloList]:
+    async def get_lists(self, **kwargs):  #-> List[TrelloList]:
         url = f"https://trello.com/1/boards/{self.board_id}/lists"
         json = {
             **self.base_json_params.copy(),
-            **kwagrs
+            **kwargs
         }
         async with ClientSession(headers={"Accept": "application/json"}) as c:
             response = await c.get(url, json=json)
@@ -193,7 +180,7 @@ class TrelloJson:
         # response = await self.get(url=url, json=json)
         # return [TrelloList.parse_obj(lst) for lst in response]
 
-    async def add_member(self, card_id, value) -> dict:
+    async def add_member(self, card_id, value) -> Union[dict, list]:
         """
         :param card_id: The ID of the Card. Pattern: ^[0-9a-fA-F]{32}$
         :param value: The ID of the Member to add to the card. Pattern: ^[0-9a-fA-F]{32}$

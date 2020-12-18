@@ -31,10 +31,10 @@ class TrelloCard(BaseModel):
 class TrelloWebHook(BaseModel):
     id: str
     description: str = None
-    idModel: str
+    id_model: str = Field(None, alias="idModel")
     callback_url: str = Field(None, alias="callBackURL")
     active: bool
-    cnt_fails: int = Field(None, alias="consecutiveFailures")
+    cnt_fails: int = Field(0, alias="consecutiveFailures")
     date_fail_first: datetime = Field(None, alias="firstConsecutiveFailDate")
 
 
@@ -51,7 +51,7 @@ class TrelloList(BaseModel):
     text: str = None
 
 
-class MemberCreator(BaseModel):
+class Member(BaseModel):
     id: str
     type: str = None
     username: str = None
@@ -63,11 +63,11 @@ class Entities(BaseModel):
     card: TrelloCard = None
     list_before: TrelloList = Field(None, alias="listBefore")
     list_after: TrelloList = Field(None, alias="listAfter")
-    member_creator: MemberCreator = Field(None, alias="memberCreator")
+    member_creator: Member = Field(None, alias="memberCreator")
 
 
 class Display(BaseModel):
-    translationKey: str
+    translation_key: str = Field(None, alias="translationKey")
     entities: Entities
 
 
@@ -91,7 +91,7 @@ class Action(BaseModel):
     type: str
     date: datetime
     display: Display
-    member_creator: MemberCreator = Field(None, alias="memberCreator")
+    member_creator: Member = Field(None, alias="memberCreator")
 
 
 class TrelloUpdate(BaseModel):
